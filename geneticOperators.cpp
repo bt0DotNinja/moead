@@ -6,10 +6,10 @@
 #include <functional>
 #include <omp.h>
 #include <algorithm>
-#include "nsga2.h" 
+#include "scalarfun.h" 
 #include "pfront.h"
 
-long double NSGA2::repara(long double val, long double min, long double max){
+long double GENOPS::repara(long double val, long double min, long double max){
 	long double X=val;
 	while(!(X >= min && X <= max)){
 		if(X > max)
@@ -21,7 +21,7 @@ long double NSGA2::repara(long double val, long double min, long double max){
 	
 }
 
-std::vector<std::vector<std::vector<long double>>> NSGA2::fnds(std::vector<std::vector<long double>> &pop){
+std::vector<std::vector<std::vector<long double>>> GENOPS::fnds(std::vector<std::vector<long double>> &pop){
 	std::vector<std::vector<std::vector<long double>>> S;
 	std::vector<std::vector<std::vector<long double>>> F;
 	std::vector<std::vector<long double>> Q;
@@ -60,7 +60,7 @@ std::vector<std::vector<std::vector<long double>>> NSGA2::fnds(std::vector<std::
 	F.resize(k);
 	return F;
 }
-std::vector<std::vector<long double>> NSGA2::cda(std::vector<std::vector<long double>> I){
+std::vector<std::vector<long double>> GENOPS::cda(std::vector<std::vector<long double>> I){
 	long double fmin,fmax;
 	int l=I.size();
 	int m=I[0].size()-1;
@@ -84,7 +84,7 @@ std::vector<std::vector<long double>> NSGA2::cda(std::vector<std::vector<long do
 				    });
 	return I;
 }
-std::vector<std::vector<long double>> NSGA2::sbx(std::vector<long double> &P1, std::vector<long double> &P2, std::mt19937 &e){
+std::vector<std::vector<long double>> GENOPS::sbx(std::vector<long double> &P1, std::vector<long double> &P2, std::mt19937 &e){
 	static std::uniform_real_distribution<long double> d(0.0,1.0);
 	std::vector<std::vector<long double>> res;
 	std::vector<long double> X,middle;
@@ -110,7 +110,7 @@ std::vector<std::vector<long double>> NSGA2::sbx(std::vector<long double> &P1, s
 	}
 	return res;
 }
-std::vector<long double> NSGA2::rmut(std::vector<long double> &son, long double mutf, std::mt19937 &e){
+std::vector<long double> GENOPS::rmut(std::vector<long double> &son, long double mutf, std::mt19937 &e){
 	std::vector<long double> res;
 	static std::uniform_real_distribution<long double> d(0.0,1.0);
 	long double u,v,s;
@@ -145,7 +145,7 @@ std::vector<long double> NSGA2::rmut(std::vector<long double> &son, long double 
 	}
 	return res;
 }
-std::vector<std::vector<long double>> NSGA2::filler(std::vector<std::vector<long double>> &pop, std::vector<std::vector<std::vector<long double>>> &nds){
+std::vector<std::vector<long double>> GENOPS::filler(std::vector<std::vector<long double>> &pop, std::vector<std::vector<std::vector<long double>>> &nds){
 	std::vector<std::vector<long double>> res,tmp,tmp2;
 	int popLen=pop.size()/2;
 	int k=0, flag=1, i=0;

@@ -5,7 +5,7 @@
 #define NSGA2_H
 
 
-namespace NSGA2{
+namespace GENOPS{
 	long double repara(long double, long double, long double);
 	std::vector<std::vector<std::vector<long double>>> fnds(std::vector<std::vector<long double>> &);
 	std::vector<std::vector<long double>> cda(std::vector<std::vector<long double>> );
