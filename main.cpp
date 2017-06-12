@@ -19,21 +19,23 @@
 #include "moead.h"
 
 int main(int argc,char **argv){
-	std::vector<std::vector<long double>> pop,pfit,parent,front,B;
+	std::vector<std::vector<long double>> pop,pfit,parent,front,W,archivo;
+	std::vector<std::vector<int>> B;
 	std::random_device rdev{};
 	std::mt19937 e{rdev()};
+	std::vector<long double> ideal;
 	std::vector<long double> ref={11.0,11.0};
 	std::vector<long double> onezero={1.0,0};
 	std::vector<long double> zeroone={0.0,1};
-	long double hyper,igen;
+	long double hyper;
 	double tiempo;
-	int r1int,r2int,cmp,k=0,sdebug=0;
+	int r1int,r2int,cmp,dim,k=0,sdebug=0;
 
 	parent.resize(2);
 
 	if(argc < 9){
 		std::cout << "Error, se requieren argumentos" << std::endl;
-		std::cout << argv[0] <<" popSize mutRatio CrossRatio generaciones T funcion control semilla archivoSalida " << std::endl;
+		std::cout << argv[0] <<" popSize mutRatio generaciones T funcion control semilla archivoSalida " << std::endl;
 		std::cout << " 1 ZDT2" << std::endl;
 		std::cout << " 2 ZDT3" << std::endl;
 		std::cout << " 3 ZDT6" << std::endl;
@@ -42,16 +44,15 @@ int main(int argc,char **argv){
 		return -1;
 	}
 	double tasaMut=std::atof(argv[2])/100.0;
-	double tasaCruza=std::atof(argv[3])/100.0;
-	int gen= std::atoi(argv[4]);
+	int gen= std::atoi(argv[3]);
 	int popLen =std::atoi(argv[1]);
-	int funObj= std::atoi(argv[6]);
-	int T= std::atoi(argv[5]);
+	int funObj= std::atoi(argv[5]);
+	int T= std::atoi(argv[4]);
 	static std::uniform_int_distribution<int> uid(0,popLen-1);
 	static std::uniform_int_distribution<int> sel(0,T-1);
-	int control=std::atoi(argv[7]);
-	int semilla=std::atoi(argv[8]);
-	std::ofstream dst(argv[9]);
+	int control=std::atoi(argv[6]);
+	int semilla=std::atoi(argv[7]);
+	std::ofstream dst(argv[8]);
 	
 	if(!!control)
 		e.seed(semilla);
@@ -60,25 +61,33 @@ int main(int argc,char **argv){
 	switch(funObj){
 		case 2:
 			ff=BENCHMARKS::ZDT3;
+			dim=2;
 			break;
 		case 3:
 			ff=BENCHMARKS::ZDT6;
+			dim=2;
 			break;
 		case 4:
 			ff=BENCHMARKS::DTLZ2;
+			dim=3;
 			break;
 		default:
+			dim=2;
 			break;
 	}
-	B=MOEAD::BVector(popLen,T);	
-	pop=BENCHMARKS::genPop(popLen,2,e);
+	
+	ideal=MOEAD::initIdeal(dim);
+	pop=BENCHMARKS::genPop(popLen,dim,e);
 	pfit=BENCHMARKS::rank(pop,ff);
-
+	W=MOEAD::WVector(popLen);	
+	B=MOEAD::BVector(popLen,W,T);	
+	archivo=MOEAD::initFile(popLen);
 	/******************************************************************************/
 	auto startTime = std::chrono::system_clock::now();
 	
 
 	do{
+		//discutir paralelismo
 		#pragma paralell for private(i)
 		for(int i=0;i<popLen;i++){
 			r1int=sel(e);
@@ -91,12 +100,14 @@ int main(int argc,char **argv){
 			parent=GENOPS::sbx(parent[0],parent[1],e);
 			parent[0]=GENOPS::rmut(parent[0],tasaMut,e);
 			parent[1]=GENOPS::rmut(parent[1],tasaMut,e);
-			pop=MOEAD::isBetter(parent,pop,pfit,B,i);
+			pop=MOEAD::isBetter(parent,B,i,ff);
+			pfit=BENCHMARKS::rank(pop,ff);
+			archivo=MOEAD::UpdateFile(pop,pfit,archivo);
 
 		}	
 
 
-	k++;
+		k++;
 	}while(k<gen);
 
 	auto endTime = std::chrono::system_clock::now();
