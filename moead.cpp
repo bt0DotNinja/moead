@@ -2,6 +2,13 @@
 #include<cmath>
 #include "moead.h"
 
+long double MOEAD::euclideanDistance(std::vector<long double> &a,std::vector<long double> &b){
+	long res=0;
+	for(int i=0;i<a.size();i++)
+		res+=std::pow(a[i] - b[i],2);
+	return std::sqrt(res)
+}
+
 // scalarizing functions for decomposition methods
 long double scalar_Tcheby(vector <long double> &y_obj, vector <long double> &namda,vector<long double> idealpoint,int numObjetives )
 {
@@ -116,6 +123,12 @@ std::vector<vector<long double>> MOEAD::WVector(int popLen){
 	//TODO
 }
 std::vector<vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<long double>> &W, int T){
+	std::vector<std::vector<long double>> B;
+	std::vector<long double> tmp;
+	for(int i=0;i<popLen;i++){
+		for(int j=0;j<popLen;
+	}
+		
 	return B;
 }
 std::vector<vector<long double>> MOEAD::initFile(int popLen, int dim){
