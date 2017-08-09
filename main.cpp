@@ -124,13 +124,13 @@ int main(int argc,char **argv){
 	for(int i=0;i<front.size();i++){
                for(int j=0;j< front[i].size()-1;j++)
                         dst<< front[i][j] << ' ';
-               dst << std::endl;
+               dst << "\n";
         }
 
 	dst.close();
 
 	std::cout <<std::setprecision(std::numeric_limits<long double>::digits10 + 1);
-	std::cout << hyper << " " << tiempo << "s" << std::endl;
+	std::cout << hyper << " " << tiempo << "s\n";
 
 return 0;
 }

@@ -1,5 +1,6 @@
-#include<vector>
-#include<cmath>
+#include <vector>
+#include <cmath>
+//TODO #include <gurobi_c++.h>
 #include "moead.h"
 
 long double MOEAD::euclideanDistance(std::vector<long double> &a,std::vector<long double> &b){
@@ -10,14 +11,12 @@ long double MOEAD::euclideanDistance(std::vector<long double> &a,std::vector<lon
 }
 
 // scalarizing functions for decomposition methods
-long double scalar_Tcheby(vector <long double> &y_obj, vector <long double> &namda,vector<long double> idealpoint,int numObjetives )
+long double MOEAD::scalar_Tcheby(vector <long double> &y_obj, vector <long double> &namda,vector<long double> idealpoint,int numObjetives )
 {
 
 	double fvalue = 0;
     
 	// Tchebycheff approach
-	if(!strcmp(strFunctionType,"_TCH1"))
-	{
 		double max_fun = -1.0e+30;
 		for(int n=0; n<numObjectives; n++)
 		{
@@ -32,14 +31,11 @@ long double scalar_Tcheby(vector <long double> &y_obj, vector <long double> &nam
 		}
 		
 		fvalue = max_fun;
-	}
 	return fvalue;
 }
 
-long double scalar_NormalTcheby(vector <long double> &y_obj, vector <long double> &namda,vector<long double> idealpoint,int numObjetives){
+long double MOEAD::scalar_NormalTcheby(vector <long double> &y_obj, vector <long double> &namda,vector<long double> idealpoint,int numObjetives){
 	// normalized Tchebycheff approach
-	if(!strcmp(strFunctionType,"_TCH2"))
-	{
 		vector <long double> scale;
 		for(int i=0; i<numObjectives; i++)
 		{
@@ -67,15 +63,12 @@ long double scalar_NormalTcheby(vector <long double> &y_obj, vector <long double
 
 		}
 		fvalue = max_fun;
-	}
 	return fvalue;
 }
 
 
-long double SCALAR::scalar_PBI(std::vector<long double> &y_obj, std::vector<long double> &namda, std::vector<long double> idealpoint, int numObjetivos){
+long double MOEAD::scalar_PBI(std::vector<long double> &y_obj, std::vector<long double> &namda, std::vector<long double> idealpoint, int numObjetivos){
 	//* Boundary intersection approach
-	if(!strcmp(strFunctionType,"_PBI"))
-	{
 
 		// normalize the weight vector (line segment)
 		long double nd = norm_vector(namda);
@@ -99,12 +92,28 @@ long double SCALAR::scalar_PBI(std::vector<long double> &y_obj, std::vector<long
 
 		fvalue = d1 + 5*d2;
 
-	}
-
 	return fvalue;
 }
-std::vector<long double> MOEAD::initIdeal(int dim){
+std::vector<long double> MOEAD::initIdealReference(int dim){
 	std::vector<long double> res(dim);
+	for(int i=0;i<dim;i++){
+		res[i]=1.0e30;
+	}
+	return res;
+}
+
+std::vector<long double> MOEAD::initIdealFixed(int dim){
+	std::vector<long double> res(dim);
+	for(int i=0;i<dim;i++){
+		res[i]=0.0;
+	}
+	return res;
+}
+std::vector<long double> MOEAD::initIdealExact(int dim){
+	std::vector<long double> res(dim);
+	//GRBEnv env;
+        //GRBModel modelo(env);
+	//GRBLinExpr obj;
 	for(int i=0;i<dim;i++){
 		res[i]=1.0e30;
 	}
@@ -119,8 +128,19 @@ std::vector<long double> MOEAD::updateIdeal(std::vector<std::vector<long double>
 				res[i]=archivo[i][j];
 	return res;
 }
-std::vector<vector<long double>> MOEAD::WVector(int popLen){
-	//TODO
+std::vector<vector<long double>> MOEAD::WVector(int popLen,int dim, int tip){
+
+	switch(tip){
+		case(0):
+
+			break;
+		case(1):
+			break;
+		case(2):
+			break;
+		default:
+			break;
+	}
 }
 std::vector<vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<long double>> &W, int T){
 	std::vector<std::vector<long double>> B;
