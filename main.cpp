@@ -76,7 +76,7 @@ int main(int argc,char **argv){
 			break;
 	}
 	
-	ideal=MOEAD::initIdeal(dim);
+	ideal=MOEAD::initIdealFixed(dim);
 	pop=BENCHMARKS::genPop(popLen,dim,e);
 	pfit=BENCHMARKS::rank(pop,ff);
 	W=MOEAD::WVector(popLen);	
