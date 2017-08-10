@@ -79,7 +79,28 @@ int main(int argc,char **argv){
 	ideal=MOEAD::initIdealFixed(dim);
 	pop=BENCHMARKS::genPop(popLen,dim,e);
 	pfit=BENCHMARKS::rank(pop,ff);
-	W=MOEAD::WVector(popLen);	
+	//control over weight generation
+	switch(c){
+		case 0:
+			W=WEIGHT::simpleLattice(popLen);
+			break;
+		case 1:
+			W=WEIGHT::uniformDesign(popLen);
+			break;
+		case 2:
+			W=WEIGHT::randomPoints(popLen);
+			break;
+		case 3:
+			W=WEIGHT::generalizedDecomp(popLen);
+			break;
+		case 4:
+			W=WEIGHT::twoLayerWeight(popLen);
+			break;
+		default:
+			W=WEIGHT::simpleLattice(popLen);
+			break;
+	}
+
 	B=MOEAD::BVector(popLen,W,T);	
 	archivo=MOEAD::initFile(popLen);
 	/******************************************************************************/
