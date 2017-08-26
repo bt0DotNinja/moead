@@ -1,7 +1,18 @@
 #include <vector>
 #include <cmath>
 //TODO #include <gurobi_c++.h>
+#include <queue>
+#include <utility>
+#include <functional>
 #include "moead.h"
+
+class CompareDist
+{
+public:
+    bool operator()(pair<int,long double> n1,pair<int,long double> n2) {
+        return n1.second<n2.second;
+    }
+};
 
 long double MOEAD::euclideanDistance(std::vector<long double> &a,std::vector<long double> &b){
 	long res=0;
@@ -47,17 +58,34 @@ std::vector<long double> MOEAD::updateIdeal(std::vector<std::vector<long double>
 }
 std::vector<vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<long double>> &W, int T){
 	std::vector<std::vector<long double>> B;
-	std::vector<long double> tmp;
-	for(int i=0;i<popLen;i++){
-		for(int j=0;j<popLen;
+	for(int i=0;i<W.size();i++){
+		priority_queue<pair<int, long double>,vector<pair<int,long double>>,CompareDist> pq;
+		std::vector<long double> tmp;
+		for(int j=0;j<W.size();j++){
+			if(i==j)
+				continue;
+				
+			pair<int,long double> actual(j,euclideanDistance(W[i],W[j]));
+			pq.push(actual);
+		}
+		for(int j=0;j<T;j++){
+			tmp.push_back(pq.top().first);
+			pq.pop();
+		}
+		B.push_back(tmp);
+		free(pq);
+		free(tmp);
 	}
 		
 	return B;
 }
 std::vector<vector<long double>> MOEAD::initFile(int popLen, int dim){
 	std::vector<std::vector<long double>> B(popLen,vector<long double>(dim,1.0e30));
-	return f;	
+	return B;	
 }
-std::vector<std::vector<long double>> MOEAD::isBetter(std::vector<std::vector<long double>> &sons,std::vector<std::vector<long double>> &B, int, std::function<std::vector<long double>(std::vector<long double> &)>);
-std::vector<std::vector<long double>> updateFile(std::vector<std::vector<long double>&,std::vector<std::vector<long double>> &);
+
+void updateFile(std::vector<std::vector<long double>&archive,std::vector<std::vector<long double>> &val,int id, std::function<long double(std::vector<long double> &, std::vector<long double> &, int)> ff){
+	for(int i=0;i<
+
+}
 

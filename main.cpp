@@ -121,9 +121,8 @@ int main(int argc,char **argv){
 			parent=GENOPS::sbx(parent[0],parent[1],e);
 			parent[0]=GENOPS::rmut(parent[0],tasaMut,e);
 			parent[1]=GENOPS::rmut(parent[1],tasaMut,e);
-			pop=MOEAD::isBetter(parent,B,i,ff);
 			pfit=BENCHMARKS::rank(pop,ff);
-			archivo=MOEAD::UpdateFile(pop,pfit,archivo);
+			MOEAD::UpdateFile(pop,pfit,archivo,ff);
 
 		}	
 
