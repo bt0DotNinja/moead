@@ -4,6 +4,8 @@
 #include <queue>
 #include <utility>
 #include <functional>
+#include <algorithm>
+#include "pfront.h"
 #include "moead.h"
 
 class CompareDist
@@ -57,7 +59,7 @@ std::vector<long double> MOEAD::updateIdeal(std::vector<std::vector<long double>
 	return res;
 }
 std::vector<vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<long double>> &W, int T){
-	std::vector<std::vector<long double>> B;
+	std::vector<std::vector<int>> B;
 	for(int i=0;i<W.size();i++){
 		priority_queue<pair<int, long double>,vector<pair<int,long double>>,CompareDist> pq;
 		std::vector<long double> tmp;
@@ -84,8 +86,24 @@ std::vector<vector<long double>> MOEAD::initFile(int popLen, int dim){
 	return B;	
 }
 
-void updateFile(std::vector<std::vector<long double>&archive,std::vector<std::vector<long double>> &val,int id, std::function<long double(std::vector<long double> &, std::vector<long double> &, int)> ff){
-	for(int i=0;i<
+void UpdateNeighborn(std::vector<std::vector<long double>> &B, std::vector<std::vector<long double>> &pop,std::vector<long double> &val, std::vector<long double> &ideal, int id, std::function<long double(std::vector<long double> &, std::vector<long double> &)> ff){
+	long double f1 = ff(val,ideal);
+
+	for(int i=0;i<B[id].size();i++){
+		long double f2=ff(pop[B[id][i]], ideal);
+		if(f1<f2)
+			pop[B[id][i]]=val;
+	}
+}
+
+void updateFile(std::vector<std::vector<long double>&archive,std::vector<std::vector<long double>> &pop,int id, std::function<std::vector<long double>(std::vector<std::vector<long double>> &)> ff){
+
+	std::vector<int> index = PFRONT::domIndex(pfit[id], archfit);
+	if(!index.empty()){
+		for(int i= index.size(); i>=0; i--)
+			archive.erase(archive.begin() + i);
+			archfit.erase(archfit.begin() + i);
+	}
 
 }
 

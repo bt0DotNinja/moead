@@ -113,14 +113,16 @@ int main(int argc,char **argv){
 		for(int i=0;i<popLen;i++){
 			r1int=sel(e);
 			r2int=sel(e);
+
+			std::vector<long double> childs;
 			while(r1int==r2int) 
 				r2int=sel(e);
 			parent[0]=B[i][r1int];
 			parent[1]=B[i][r2int];
 			
-			parent=GENOPS::sbx(parent[0],parent[1],e);
-			parent[0]=GENOPS::rmut(parent[0],tasaMut,e);
-			parent[1]=GENOPS::rmut(parent[1],tasaMut,e);
+			childs=GENOPS::sbx(parent[0],parent[1],e);
+			childs[0]=GENOPS::rmut(childs[0],tasaMut,e);
+			MOEAD::UpdateReference(childs,B,pop,ff);
 			pfit=BENCHMARKS::rank(pop,ff);
 			MOEAD::UpdateFile(pop,pfit,archivo,ff);
 

@@ -78,6 +78,30 @@ std::vector<std::vector<long double>> PFRONT::domOnevsAll(std::vector<std::vecto
 	return front;
 }
 
+std::vector<int> PFRONT::domIndex(std::vector<std::vector<long double> &ind,std::vector<long double>> &pop){
+	std::vector<std::vector<long double>> front;
+	std::vector<int> index;
+	bool nonDominated=true;
+	int d;
+	index.push_back(0);
+	for(int j=0;j<index.size();j++){
+		d=bentley(ind,pop[j]);
+		if(d==-1){
+			nonDominated=false;
+			break;
+		}
+		if(d==1){
+			index.push_back(j);
+			}
+		}
+		
+	}
+	if(!nonDominated)
+		index.clear();
+
+	return index;
+}
+
 std::vector<std::vector<long double>> PFRONT::domBentleyBased(std::vector<std::vector<long double>> &pop){
 	std::vector<std::vector<long double>> front;
 	std::vector<int> index;
