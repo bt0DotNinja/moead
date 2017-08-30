@@ -86,7 +86,7 @@ std::vector<vector<long double>> MOEAD::initFile(int popLen, int dim){
 	return B;	
 }
 
-void UpdateNeighborn(std::vector<std::vector<long double>> &B, std::vector<std::vector<long double>> &pop,std::vector<long double> &val, std::vector<long double> &ideal, int id, std::function<long double(std::vector<long double> &, std::vector<long double> &)> ff){
+void MOEAD::UpdateNeighborn(std::vector<std::vector<long double>> &B, std::vector<std::vector<long double>> &pop,std::vector<long double> &val, std::vector<long double> &ideal, int id, std::function<long double(std::vector<long double> &, std::vector<long double> &)> ff){
 	long double f1 = ff(val,ideal);
 
 	for(int i=0;i<B[id].size();i++){
@@ -96,13 +96,16 @@ void UpdateNeighborn(std::vector<std::vector<long double>> &B, std::vector<std::
 	}
 }
 
-void updateFile(std::vector<std::vector<long double>&archive,std::vector<std::vector<long double>> &pop,int id, std::function<std::vector<long double>(std::vector<std::vector<long double>> &)> ff){
+void MOEAD::updateFile(std::vector<std::vector<long double>>&archive,std::vector<std::vector<long double>> &pop,std::vector<std::vector<long double>> &pfit,std::vector<std::vector<long double>> &archfit, int id){
 
 	std::vector<int> index = PFRONT::domIndex(pfit[id], archfit);
 	if(!index.empty()){
-		for(int i= index.size(); i>=0; i--)
-			archive.erase(archive.begin() + i);
-			archfit.erase(archfit.begin() + i);
+		for(int i= index.size(); i>=0; i--){
+			archive.erase(i);
+			archfit.erase(i);
+		}
+		archive.push_back(pop[id]);
+		archfit.push_back(pfit[id]);
 	}
 
 }

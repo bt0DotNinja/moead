@@ -14,7 +14,8 @@
 #include "pfront.h"
 #include "metrics.h"
 #include "benchmarks.h"
-#include "scalarfunc.h"
+#include "decomp.h"
+#include "weight.h"
 #include "geneticOperators.h"
 #include "moead.h"
 
@@ -30,7 +31,7 @@ int main(int argc,char **argv){
 	long double hyper;
 	double tiempo;
 	int r1int,r2int,cmp,dim,k=0,sdebug=0;
-
+	int c;
 	parent.resize(2);
 
 	if(argc < 9){
@@ -82,7 +83,7 @@ int main(int argc,char **argv){
 	//control over weight generation
 	switch(c){
 		case 0:
-			W=WEIGHT::simpleLattice(popLen);
+			W=WEIGHT::simplexLattice(popLen);
 			break;
 		case 1:
 			W=WEIGHT::uniformDesign(popLen);
@@ -97,7 +98,7 @@ int main(int argc,char **argv){
 			W=WEIGHT::twoLayerWeight(popLen);
 			break;
 		default:
-			W=WEIGHT::simpleLattice(popLen);
+			W=WEIGHT::simplexLattice(popLen);
 			break;
 	}
 
@@ -114,17 +115,17 @@ int main(int argc,char **argv){
 			r1int=sel(e);
 			r2int=sel(e);
 
-			std::vector<long double> childs;
+			std::vector<std::vector<long double>> childs;
 			while(r1int==r2int) 
 				r2int=sel(e);
-			parent[0]=B[i][r1int];
-			parent[1]=B[i][r2int];
+			parent[0]=pop[B[i][r1int]];
+			parent[1]=pop[B[i][r2int]];
 			
 			childs=GENOPS::sbx(parent[0],parent[1],e);
 			childs[0]=GENOPS::rmut(childs[0],tasaMut,e);
-			MOEAD::UpdateReference(childs,B,pop,ff);
+			MOEAD::UpdateNeighborn(B,pop,childs,ideal,ff);
 			pfit=BENCHMARKS::rank(pop,ff);
-			MOEAD::UpdateFile(pop,pfit,archivo,ff);
+			MOEAD::updateFile(pop,pfit,archivo,ff);
 
 		}	
 

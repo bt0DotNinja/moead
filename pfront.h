@@ -9,6 +9,6 @@ namespace PFRONT{
 	std::vector<std::vector<long double>> domAllvsAll(std::vector<std::vector<long double>> &);
 	std::vector<std::vector<long double>> domOnevsAll(std::vector<std::vector<long double>> &);
 	std::vector<std::vector<long double>> domBentleyBased(std::vector<std::vector<long double>> &);
-	std::vector<int> PFRONT::domIndex(std::vector<std::vector<long double> &,std::vector<long double>> &);
+	std::vector<int> domIndex(std::vector<std::vector<long double>> &,std::vector<long double> &);
 }
 #endif

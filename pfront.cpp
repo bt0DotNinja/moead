@@ -78,7 +78,7 @@ std::vector<std::vector<long double>> PFRONT::domOnevsAll(std::vector<std::vecto
 	return front;
 }
 
-std::vector<int> PFRONT::domIndex(std::vector<std::vector<long double> &ind,std::vector<long double>> &pop){
+std::vector<int> PFRONT::domIndex(std::vector<std::vector<long double>> &pop,std::vector<long double> &ind){
 	std::vector<std::vector<long double>> front;
 	std::vector<int> index;
 	bool nonDominated=true;
