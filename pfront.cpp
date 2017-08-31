@@ -95,7 +95,6 @@ std::vector<int> PFRONT::domIndex(std::vector<std::vector<long double>> &pop,std
 			}
 		}
 		
-	}
 	if(!nonDominated)
 		index.clear();
 

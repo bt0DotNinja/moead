@@ -15,12 +15,11 @@
 #include "metrics.h"
 #include "benchmarks.h"
 #include "decomp.h"
-#include "weight.h"
 #include "geneticOperators.h"
 #include "moead.h"
 
 int main(int argc,char **argv){
-	std::vector<std::vector<long double>> pop,pfit,parent,front,W,archivo;
+	std::vector<std::vector<long double>> pop,pfit,parent,front,W,archivo,archfit;
 	std::vector<std::vector<int>> B;
 	std::random_device rdev{};
 	std::mt19937 e{rdev()};
@@ -33,7 +32,7 @@ int main(int argc,char **argv){
 	int r1int,r2int,cmp,dim,k=0,sdebug=0;
 	int c;
 	parent.resize(2);
-
+	bool subs;
 	if(argc < 9){
 		std::cout << "Error, se requieren argumentos" << std::endl;
 		std::cout << argv[0] <<" popSize mutRatio generaciones T funcion control semilla archivoSalida " << std::endl;
@@ -77,33 +76,38 @@ int main(int argc,char **argv){
 			break;
 	}
 	
+	
+
 	ideal=MOEAD::initIdealFixed(dim);
 	pop=BENCHMARKS::genPop(popLen,dim,e);
 	pfit=BENCHMARKS::rank(pop,ff);
-	//control over weight generation
+	W=MOEAD::fromFile(argv[10]);
+	//control over scalar functions
+	std::function<long double(std::vector<long double> &, std::vector<long double> &, std::vector<long double> &)> f2=DECOMP::scalar_PBI;
 	switch(c){
 		case 0:
-			W=WEIGHT::simplexLattice(popLen);
+			f2=DECOMP::scalar_tcheby;
 			break;
 		case 1:
-			W=WEIGHT::uniformDesign(popLen);
+			f2=DECOMP::scalar_NormalTcheby;
 			break;
 		case 2:
-			W=WEIGHT::randomPoints(popLen);
+			f2=DECOMP::scalar_PBI;
 			break;
 		case 3:
-			W=WEIGHT::generalizedDecomp(popLen);
-			break;
-		case 4:
-			W=WEIGHT::twoLayerWeight(popLen);
+			f2=DECOMP::scalar_IPBI;
 			break;
 		default:
-			W=WEIGHT::simplexLattice(popLen);
 			break;
 	}
 
 	B=MOEAD::BVector(popLen,W,T);	
 	archivo=MOEAD::initFile(popLen);
+	archfit=MOEAD::initFile(popLen);
+	
+
+
+
 	/******************************************************************************/
 	auto startTime = std::chrono::system_clock::now();
 	
@@ -115,17 +119,18 @@ int main(int argc,char **argv){
 			r1int=sel(e);
 			r2int=sel(e);
 
-			std::vector<std::vector<long double>> childs;
+			std::vector<std::vector<long double>> child;
 			while(r1int==r2int) 
 				r2int=sel(e);
 			parent[0]=pop[B[i][r1int]];
 			parent[1]=pop[B[i][r2int]];
 			
-			childs=GENOPS::sbx(parent[0],parent[1],e);
-			childs[0]=GENOPS::rmut(childs[0],tasaMut,e);
-			MOEAD::UpdateNeighborn(B,pop,childs,ideal,ff);
-			pfit=BENCHMARKS::rank(pop,ff);
-			MOEAD::updateFile(pop,pfit,archivo,ff);
+			child=GENOPS::sbx(parent[0],parent[1],e);
+			child[0]=GENOPS::rmut(child[0],tasaMut,e);
+			child[1]=ff(child[0]);
+			subs=MOEAD::updateNeighborn(B,W,pop,pfit,child,ideal,i,f2);
+			if(subs)
+				MOEAD::updateFile(archivo,pop,pfit,archfit,i);
 
 		}	
 
@@ -138,7 +143,7 @@ int main(int argc,char **argv){
 	std::chrono::duration<double> elapsed_seconds = endTime - startTime;
 	tiempo=elapsed_seconds.count();
 
-	front=PFRONT::domOnevsAll(pfit);
+	front=PFRONT::domOnevsAll(archfit);
 	std::sort(front.begin(),front.end());
 	front.erase( std::unique( front.begin(), front.end() ), front.end() );
 	

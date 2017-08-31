@@ -6,8 +6,9 @@
 #include <functional>
 #include <omp.h>
 #include <algorithm>
-#include "scalarfun.h" 
+#include "decomp.h" 
 #include "pfront.h"
+#include "geneticOperators.h"
 
 long double GENOPS::repara(long double val, long double min, long double max){
 	long double X=val;
