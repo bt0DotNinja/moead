@@ -16,12 +16,13 @@ std::vector<std::vector<long double>> MOEAD::fromFile(std::string file){
 	int N,dim;
 	std::ifstream in;
 	in.open(file,std::ios_base::in);
+	in >> N; //dummy input for # in file format header
 	in >> N;
 	in >> dim;
 	std::vector<std::vector<long double>> result(N,std::vector<long double> (dim,0));
 	for(int i=0;i<N;i++)
 		for(int j=0;j<dim;j++)
-			std::cin >> result[i][j];
+			in >> result[i][j];
 	return result;
 }
 
