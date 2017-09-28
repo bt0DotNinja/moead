@@ -37,54 +37,75 @@ def uniformDesign(N,dim):
     '''
     def udCD(u,N,dim):
         '''The centered L2-discrepancy'''
-        magic = (13/12)**dim        
+        magic = (13.0/12.0)**dim        
         
         s1 = 0
-        for k in len(u):
+        for k in range(N):
             tmp=1
-            for i in dim:
-                tmp*=1+ 0.5*abs(u[k][i]-0.5)-0.5*abs(u[k][i]-0.5)**2
+            for i in range(dim):
+                tmp*=2+abs(u[k][i]-0.5)-(abs(u[k][i]-0.5))**2
             s1+=tmp
         
-        s1*=(2/N)
+        s1*=(2**(1-dim)/N)
         s2=0
-        for k in len(u):
-            for j in len(u):
+        for k in range(N):
+            sp=0
+            for j in range(N):
                 tmp=1
-                for i in dim:
-                    tmp*=1 + 0.5*abs(u[k][i]-0.5) + 0.5*abs(u[j][i]-0.5) - 0.5*abs(u[k][i] - u[j][i])
-                s2+=tmp
-        
+                for i in range(dim):
+                    tmp*=1 + 0.5*(abs(u[k][i]-0.5) + abs(u[j][i]-0.5) - abs(u[k][i] - u[j][i]))
+                sp+=tmp
+            s2+=sp
         s2*=1/(N**2)
 
-        return magic - s1 + s2
+        return abs(magic - s1 + s2)
 
-    def constructUn(h,N):
-        pass
+    def constructUn(h,N,dim):
+        '''good lattice point method'''
+        u=[]
+        for i in range(1,N+1):
+            tmp=[]
+            for j in range(dim):
+                val=(i*h[j])%N
+                if val == 0:
+                    val=N
+                tmp.append(val)
+            u.append(tmp)
+        return u
     
-    noFactors = [x for x in range(2,N+1) if gcd(x,N) == 1 or gcd(x,N)==N]
+    noFactors = [x for x in range(1,N) if gcd(x,N)==1]
     comb=it.combinations(noFactors,dim) 
     H=[x for x in comb]
-    minl2=10**10
+    minl2=10**100
     U=[]
     for h in H:
-        candidate=construcUn(h,N)
+        candidate=constructUn(h,N,dim)
+        for i in range(N):
+            for j in range(dim):
+                candidate[i][j]=(candidate[i][j]-0.5)/N
         val = udCD(candidate,N,dim)
         if val < minl2:
             minl2=val
             U=candidate
-    
- 
-    for i in range(len(U)):
-        for j in range(dim):
-            U[i][j]=(U[i][j]-0.5)/N
-
     #Generate weights from U_N(h)
+    lbd=[]
+    for k in range(len(U)):
+        tmp=[]
+        for i in range(dim):
+            if i == 0:
+                val=1-U[k][i]**(1.0/(dim-1))
+            elif i < dim-1:
+                val=1-U[k][i]**(1.0/(dim-(i+1)))
+                for j in range(i):
+                    val*=U[k][j]**(1/(dim-(j+1)))
+            else:
+                val=1
+                for j in range(dim-1):
+                    val*=U[k][j]**(1/(dim-(j+1)))
+            tmp.append(val)
+        lbd.append(tmp)
             
-            
-         
-
-    return H
+    return lbd
 
 def simplexLattice(H,dim):
     ''' 
@@ -133,7 +154,7 @@ def mlsimplexLattice(H1,H2,dim,sf):
 if __name__=='__main__':
     #assert len(sys.argv) > 4, "Argumentos insuficientes: H1 H2 dim resultfile"
     
-    result = mlsimplexLattice(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),float(sys.argv[4]))
+    result = uniformDesign(int(sys.argv[1]),int(sys.argv[2]))
     #np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f', header=str(len(result))+' '+sys.argv[3])
-    np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f')
+    np.savetxt(sys.argv[3],np.c_[result],fmt='%.10f')
     
