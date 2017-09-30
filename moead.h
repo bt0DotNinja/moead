@@ -4,7 +4,7 @@
 #include<string>
 
 namespace MOEAD{
-std::vector<std::vector<long double>> fromFile(std::string file);
+std::vector<std::vector<long double>> fromFile(std::string, int,int);
 std::vector<long double> initIdealReference(int dim);
 std::vector<long double> initIdealFixed(int dim);
 std::vector<long double> initIdealExact(int dim);

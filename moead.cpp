@@ -12,13 +12,9 @@
 #include "moead.h"
 
 
-std::vector<std::vector<long double>> MOEAD::fromFile(std::string file){
-	int N,dim;
+std::vector<std::vector<long double>> MOEAD::fromFile(std::string file,int N,int dim){
 	std::ifstream in;
 	in.open(file,std::ios_base::in);
-	in >> N; //dummy input for # in file format header
-	in >> N;
-	in >> dim;
 	std::vector<std::vector<long double>> result(N,std::vector<long double> (dim,0));
 	for(int i=0;i<N;i++)
 		for(int j=0;j<dim;j++)
@@ -86,6 +82,7 @@ std::vector<std::vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<
 				continue;
 				
 			std::pair<int,long double> actual(j,euclideanDistance(W[i],W[j]));
+			std::cout << actual.second << "\n";
 			pq.push(actual);
 		}
 		for(int j=0;j<T;j++){

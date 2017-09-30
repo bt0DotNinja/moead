@@ -3,3 +3,4 @@ test
 *.pyc
 *.dat
 *.txt
+vgcore.*

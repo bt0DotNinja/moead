@@ -18,4 +18,7 @@ benchmarks.o: benchmarks.cpp
 	g++ -g -O3 -std=c++11 -c -o benchmarks.o benchmarks.cpp -fopenmp 
 clean:
 	rm *.o test
-
+debug:
+	valgrind --leak-check=full --track-origins=yes  ./test 300 10 250 20 4 0 0 0 sp300_dim3.txt resultado.txt
+run:
+	./test 300 10 250 20 4 0 0 0 sp300_dim3.txt resultado.txt

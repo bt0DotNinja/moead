@@ -30,12 +30,11 @@ int main(int argc,char **argv){
 	long double hyper;
 	double tiempo;
 	int r1int,r2int,cmp,dim,k=0,sdebug=0;
-	int c;
 	parent.resize(2);
 	bool subs;
-	if(argc < 9){
+	if(argc < 11){
 		std::cout << "Error, se requieren argumentos" << std::endl;
-		std::cout << argv[0] <<" popSize mutRatio generaciones T funcion control semilla archivoSalida " << std::endl;
+		std::cout << argv[0] <<" popSize mutRatio generaciones T funcion control semilla  archivoSalida " << std::endl;
 		std::cout << " 1 ZDT2" << std::endl;
 		std::cout << " 2 ZDT3" << std::endl;
 		std::cout << " 3 ZDT6" << std::endl;
@@ -52,7 +51,8 @@ int main(int argc,char **argv){
 	static std::uniform_int_distribution<int> sel(0,T-1);
 	int control=std::atoi(argv[6]);
 	int semilla=std::atoi(argv[7]);
-	std::ofstream dst(argv[8]);
+	int c=std::atoi(argv[8]);
+	std::ofstream dst(argv[10]);
 	
 	if(!!control)
 		e.seed(semilla);
@@ -81,7 +81,11 @@ int main(int argc,char **argv){
 	ideal=MOEAD::initIdealFixed(dim);
 	pop=BENCHMARKS::genPop(popLen,dim,e);
 	pfit=BENCHMARKS::rank(pop,ff);
-	W=MOEAD::fromFile(argv[10]);
+	W=MOEAD::fromFile(argv[9],popLen,dim);
+	
+
+	
+
 	//control over scalar functions
 	std::function<long double(std::vector<long double> &, std::vector<long double> &, std::vector<long double> &)> f2=DECOMP::scalar_PBI;
 	switch(c){
@@ -106,6 +110,11 @@ int main(int argc,char **argv){
 	archfit=MOEAD::initFile(popLen);
 	
 
+	for(int i=0;i<B.size();i++){
+		for(int j=0;j<B[i].size();j++)	
+			std::printf("%d ",B[i][j]);
+		std::printf("\n");
+	}
 
 
 	/******************************************************************************/
@@ -114,7 +123,7 @@ int main(int argc,char **argv){
 
 	do{
 		//discutir paralelismo
-		#pragma paralell for private(i)
+		//#pragma paralell for private(i)
 		for(int i=0;i<popLen;i++){
 			r1int=sel(e);
 			r2int=sel(e);
@@ -122,6 +131,7 @@ int main(int argc,char **argv){
 			std::vector<std::vector<long double>> child;
 			while(r1int==r2int) 
 				r2int=sel(e);
+
 			parent[0]=pop[B[i][r1int]];
 			parent[1]=pop[B[i][r2int]];
 			
