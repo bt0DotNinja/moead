@@ -1,5 +1,6 @@
 #include <vector>
 #include <omp.h>
+#include <iostream>
 #include <algorithm>
 #include "pfront.h"
 
@@ -79,12 +80,15 @@ std::vector<std::vector<long double>> PFRONT::domOnevsAll(std::vector<std::vecto
 }
 
 std::vector<int> PFRONT::domIndex(std::vector<std::vector<long double>> &pop,std::vector<long double> &ind){
+	std::cout <<  "domIndex\n";
 	std::vector<std::vector<long double>> front;
 	std::vector<int> index;
 	bool nonDominated=true;
 	int d;
+	std::cout << "ind " << ind.size() << "\n";
 	index.push_back(0);
 	for(int j=0;j<index.size();j++){
+		std::cout << "pop j " <<pop[j].size() << "\n";
 		d=bentley(ind,pop[j]);
 		if(d==-1){
 			nonDominated=false;

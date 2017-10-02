@@ -83,7 +83,11 @@ int main(int argc,char **argv){
 	pfit=BENCHMARKS::rank(pop,ff);
 	W=MOEAD::fromFile(argv[9],popLen,dim);
 	
-
+	/*for(int i = 0;i<pop.size();i++){
+		for(int j = 0;j<pfit[i].size();j++)
+			std::cout << pfit[i][j] << " ";
+		std::cout << "\n";
+	}*/
 	
 
 	//control over scalar functions
@@ -101,6 +105,9 @@ int main(int argc,char **argv){
 		case 3:
 			f2=DECOMP::scalar_IPBI;
 			break;
+		case 4:
+			f2=DECOMP::scalar_AASF;
+			break;
 		default:
 			break;
 	}
@@ -109,13 +116,6 @@ int main(int argc,char **argv){
 	archivo=MOEAD::initFile(popLen);
 	archfit=MOEAD::initFile(popLen);
 	
-
-	for(int i=0;i<B.size();i++){
-		for(int j=0;j<B[i].size();j++)	
-			std::printf("%d ",B[i][j]);
-		std::printf("\n");
-	}
-
 
 	/******************************************************************************/
 	auto startTime = std::chrono::system_clock::now();
@@ -141,7 +141,7 @@ int main(int argc,char **argv){
 			subs=MOEAD::updateNeighborn(B,W,pop,pfit,child,ideal,i,f2);
 			if(subs)
 				MOEAD::updateFile(archivo,pop,pfit,archfit,i);
-
+				
 		}	
 
 

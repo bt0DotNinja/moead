@@ -31,7 +31,7 @@ public:
 };
 
 long double MOEAD::euclideanDistance(std::vector<long double> &a,std::vector<long double> &b){
-	long res=0;
+	long double res=0;
 	for(int i=0;i<a.size();i++)
 		res+=std::pow(a[i] - b[i],2);
 	return std::sqrt(res);
@@ -82,7 +82,6 @@ std::vector<std::vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<
 				continue;
 				
 			std::pair<int,long double> actual(j,euclideanDistance(W[i],W[j]));
-			std::cout << actual.second << "\n";
 			pq.push(actual);
 		}
 		for(int j=0;j<T;j++){
@@ -116,9 +115,16 @@ bool MOEAD::updateNeighborn(std::vector<std::vector<int>> &B,std::vector<std::ve
 }
 
 void MOEAD::updateFile(std::vector<std::vector<long double>>&archive,std::vector<std::vector<long double>> &pop,std::vector<std::vector<long double>> &pfit,std::vector<std::vector<long double>> &archfit, int id){
-
+	
+	std::cout <<  "updateFile\n";
 	std::vector<int> index;
+	std::cout << id << "\n";
 	index=PFRONT::domIndex(archfit,pfit[id]);
+	for(int i=0;i<index.size();i++)
+		std::cout << index[i];
+	std::cout <<  "\n";
+		
+		
 	if(!index.empty()){
 		for(int i= index.size(); i>=0; i--){
 			archive.erase(archive.begin()+i);

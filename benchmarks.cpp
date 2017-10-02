@@ -11,7 +11,6 @@ std::vector<std::vector<long double>> BENCHMARKS::rank(std::vector<std::vector<l
 	#pragma omp parallel for private(i)
 	for(i=0;i<pop.size();i++){
 		res[i]=ff(pop[i]);
-		res[i].push_back(i);
 	}
 	return res;
 }
@@ -66,16 +65,22 @@ std::vector<long double> BENCHMARKS::ZDT6(std::vector<long double> &ind){
 	return res;
 }
 std::vector<long double> BENCHMARKS::DTLZ2(std::vector<long double> &ind){
-	std::vector<long double> res(2,0);
-	long double g=0.0,second,one;
 	int n=ind.size();
+	std::vector<long double> res(n,0.0);
+	long double g=0.0;
+
 	for(int i=0;i<n;i++){
 		g+=std::pow(ind[i]-0.5,2);
 	}
-	one=(1+g)*std::cos((PI*ind[0])/2.0);
-	second=(1+g)*std::sin((PI*ind[0])/2.0);
-	res[0]=one;
-	res[1]=second;
+	
+	for(int i=0;i<n;i++){
+		res[i]=1+g;
+		for(int j=0;j<(n-i-1);j++){
+			res[i]*=std::cos((PI*ind[j])/2.0);
+			}
+		if(i>1)	
+			res[i]*=std::sin((PI*ind[(n-i-1)])/2.0);
+	}
 	return res;
 }
 std::vector<std::vector<long double>> BENCHMARKS::genPop(int popsize,int n,std::mt19937 &e){
