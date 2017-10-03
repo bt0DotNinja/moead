@@ -113,9 +113,8 @@ int main(int argc,char **argv){
 	}
 
 	B=MOEAD::BVector(popLen,W,T);	
-	archivo=MOEAD::initFile(popLen);
-	archfit=MOEAD::initFile(popLen);
-	
+	archivo=MOEAD::initFile(dim);
+	archfit=MOEAD::initFile(dim);
 
 	/******************************************************************************/
 	auto startTime = std::chrono::system_clock::now();
@@ -138,7 +137,9 @@ int main(int argc,char **argv){
 			child=GENOPS::sbx(parent[0],parent[1],e);
 			child[0]=GENOPS::rmut(child[0],tasaMut,e);
 			child[1]=ff(child[0]);
+
 			subs=MOEAD::updateNeighborn(B,W,pop,pfit,child,ideal,i,f2);
+			
 			if(subs)
 				MOEAD::updateFile(archivo,pop,pfit,archfit,i);
 				

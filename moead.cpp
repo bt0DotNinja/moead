@@ -116,23 +116,22 @@ bool MOEAD::updateNeighborn(std::vector<std::vector<int>> &B,std::vector<std::ve
 
 void MOEAD::updateFile(std::vector<std::vector<long double>>&archive,std::vector<std::vector<long double>> &pop,std::vector<std::vector<long double>> &pfit,std::vector<std::vector<long double>> &archfit, int id){
 	
-	std::cout <<  "updateFile\n";
 	std::vector<int> index;
-	std::cout << id << "\n";
 	index=PFRONT::domIndex(archfit,pfit[id]);
-	for(int i=0;i<index.size();i++)
-		std::cout << index[i];
-	std::cout <<  "\n";
-		
 		
 	if(!index.empty()){
-		for(int i= index.size(); i>=0; i--){
-			archive.erase(archive.begin()+i);
-			archfit.erase(archfit.begin()+i);
+		if(index[0]!=-1){
+			for(int i= index.size()-1; i>=0; i--){
+				archive.erase(archive.begin()+i);
+				archfit.erase(archfit.begin()+i);
+			}	
+			archive.push_back(pop[id]);
+			archfit.push_back(pfit[id]);
 		}
+	}
+	else{
 		archive.push_back(pop[id]);
 		archfit.push_back(pfit[id]);
+
 	}
-
 }
-
