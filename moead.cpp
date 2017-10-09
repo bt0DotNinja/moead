@@ -37,12 +37,14 @@ long double MOEAD::euclideanDistance(std::vector<long double> &a,std::vector<lon
 	return std::sqrt(res);
 }
 
-// scalarizing functions for decomposition methods
-std::vector<long double> MOEAD::initIdealReference(int dim){
-	std::vector<long double> res(dim);
-	for(int i=0;i<dim;i++){
-		res[i]=1.0e30;
-	}
+std::vector<long double> MOEAD::initIdealReference(std::vector<std::vector<long double>>& pfit, int dim){
+	std::vector<long double> res(dim,1.0e30);
+
+	for(int i=0;i<pfit.size();i++)
+		for(int j=0;j<dim;j++){
+			if(res[j]>pfit[i][j])
+				res[j]=pfit[i][j];
+		}		
 	return res;
 }
 
@@ -63,13 +65,14 @@ std::vector<long double> MOEAD::initIdealExact(int dim){
 	}
 	return res;
 }
-std::vector<long double> MOEAD::updateIdeal(std::vector<std::vector<long double>> &archivo, int popSize, std::vector<long double>& ideal){
+std::vector<long double> MOEAD::updateIdeal(std::vector<std::vector<long double>> &archivo, std::vector<long double>& ideal){
 	int n = ideal.size();
-	std::vector<long double> res=ideal;
-	for(int i=0;i<popSize;i++)
-		for(int j=0;j<n;j++)
+	std::vector<long double> res = ideal;
+	for(int i=0;i<archivo.size();i++)
+		for(int j=0;j<n;j++){
 			if(res[j]>archivo[i][j])
-				res[i]=archivo[i][j];
+				res[j]=archivo[i][j];
+			}
 	return res;
 }
 std::vector<std::vector<int>> MOEAD::BVector(int popLen,std::vector<std::vector<long double>> &W, int T){
@@ -109,6 +112,7 @@ bool MOEAD::updateNeighborn(std::vector<std::vector<int>> &B,std::vector<std::ve
 			pop[B[id][i]]=val[0];
 			pfit[B[id][i]]=val[1];
 			flag=true;
+			break;
 		}
 	}
 	return flag;

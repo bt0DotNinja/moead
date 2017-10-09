@@ -78,18 +78,11 @@ int main(int argc,char **argv){
 	
 	
 
-	ideal=MOEAD::initIdealFixed(dim);
 	pop=BENCHMARKS::genPop(popLen,dim,e);
 	pfit=BENCHMARKS::rank(pop,ff);
+	ideal=MOEAD::initIdealReference(pfit,dim);
 	W=MOEAD::fromFile(argv[9],popLen,dim);
 	
-	/*for(int i = 0;i<pop.size();i++){
-		for(int j = 0;j<pfit[i].size();j++)
-			std::cout << pfit[i][j] << " ";
-		std::cout << "\n";
-	}*/
-	
-
 	//control over scalar functions
 	std::function<long double(std::vector<long double> &, std::vector<long double> &, std::vector<long double> &)> f2=DECOMP::scalar_PBI;
 	switch(c){
@@ -116,6 +109,12 @@ int main(int argc,char **argv){
 	archivo=MOEAD::initFile(dim);
 	archfit=MOEAD::initFile(dim);
 
+	//archivo=pop;
+	//archfit=pfit;
+	
+	std::cout<<"Arch size" <<  archivo.size() << "\n";
+	std::cout<<"Archfit size" << archfit.size()  << "\n";
+	
 	/******************************************************************************/
 	auto startTime = std::chrono::system_clock::now();
 	
@@ -142,7 +141,11 @@ int main(int argc,char **argv){
 			
 			if(subs)
 				MOEAD::updateFile(archivo,pop,pfit,archfit,i);
-				
+			
+			ideal=MOEAD::updateIdeal(pfit,ideal);
+			std::cout<<"Arch size" <<  archivo.size() << "\n";
+			std::cout<<"Archfit size" << archfit.size()  << "\n";
+			//ideal=MOEAD::updateIdeal(archfit,ideal);
 		}	
 
 
@@ -153,7 +156,8 @@ int main(int argc,char **argv){
 	/******************************************************************************/
 	std::chrono::duration<double> elapsed_seconds = endTime - startTime;
 	tiempo=elapsed_seconds.count();
-
+	//std::cout<<"arch size" <<  archivo.size() << "\n";
+	//std::cout<<"archfit size" << archfit.size()  << "\n";
 	front=PFRONT::domOnevsAll(archfit);
 	std::sort(front.begin(),front.end());
 	front.erase( std::unique( front.begin(), front.end() ), front.end() );
@@ -161,8 +165,8 @@ int main(int argc,char **argv){
 	hyper=METRICS::hypervol2d(front,ref);
 
 	for(int i=0;i<front.size();i++){
-               for(int j=0;j< front[i].size()-1;j++)
-                        dst<< front[i][j] << ' ';
+               for(int j=0;j< front[i].size();j++)
+                        dst<< front[i][j] << " ";
                dst << "\n";
         }
 

@@ -154,7 +154,7 @@ def mlsimplexLattice(H1,H2,dim,sf):
 if __name__=='__main__':
     #assert len(sys.argv) > 4, "Argumentos insuficientes: H1 H2 dim resultfile"
     
-    result = simplexLattice(int(sys.argv[1]),int(sys.argv[2]))
+    result = uniformDesign(int(sys.argv[1]),int(sys.argv[2]))
     #np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f', header=str(len(result))+' '+sys.argv[3])
     np.savetxt(sys.argv[3],np.c_[result],fmt='%.10f')
     

@@ -22,3 +22,4 @@ debug:
 	valgrind --leak-check=full --track-origins=yes  ./test 300 10 250 20 4 0 0 0 sp300_dim3.txt resultado.txt
 run:
 	./test 300 10 250 20 4 0 0 0 sp300_dim3.txt resultado.txt
+	#./test 100 10 250 20 4 0 0 0 sp100_dim2.txt resultado.txt
