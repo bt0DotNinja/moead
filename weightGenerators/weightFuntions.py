@@ -105,7 +105,7 @@ def uniformDesign(N,dim):
             tmp.append(val)
         lbd.append(tmp)
             
-    return lbd
+    return U
 
 def simplexLattice(H,dim):
     ''' 
@@ -148,13 +148,14 @@ def mlsimplexLattice(H1,H2,dim,sf):
             I[i][j]=((1.0-sf)/dim)+(sf*I[i][j])
 
     B.extend(I)
-    return B
+    return I
     
 
 if __name__=='__main__':
     #assert len(sys.argv) > 4, "Argumentos insuficientes: H1 H2 dim resultfile"
     
-    result = uniformDesign(int(sys.argv[1]),int(sys.argv[2]))
+    #result = uniformDesign(int(sys.argv[1]),int(sys.argv[2]))
+    result = mlsimplexLattice(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),float(sys.argv[4]))
     #np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f', header=str(len(result))+' '+sys.argv[3])
-    np.savetxt(sys.argv[3],np.c_[result],fmt='%.10f')
+    np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f')
     

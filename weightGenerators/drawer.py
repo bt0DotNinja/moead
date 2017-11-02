@@ -19,7 +19,7 @@ if __name__ == '__main__':
         ax.set_xlabel('F1')
         ax.set_ylabel('F2')
         ax.set_zlabel('F3')
-        ax.scatter(dataset[0], dataset[1], dataset[2], c='r', marker='.')
+        ax.scatter(dataset[0], dataset[1], dataset[2], c='g', marker='+')
         plt.show()
     except IOError as e:
         print("I/O error({0}):{1}".format(e.errno,e.strerror))
