@@ -3,6 +3,7 @@
 
 from fractions import gcd
 import itertools as it
+import random
 import numpy as np
 from scipy.linalg import norm
 from scipy.linalg import hadamard
@@ -28,7 +29,7 @@ def generalizedDecomp(referenceParetoSet, fun):
         result.append(w)
     return result
 
-def uniformDesign(N,dim):
+def uniformDesign(N,dim,limit=100000):
     '''
     Uniform Design
     R. Wang, T. Zhang, B. Guo, "An enhanced MOEA/D using uniform directions
@@ -78,7 +79,8 @@ def uniformDesign(N,dim):
     H=[x for x in comb]
     minl2=10**100
     U=[]
-    for h in H:
+    for k in range(limit):
+        h=random.choice(H)
         candidate=constructUn(h,N,dim)
         for i in range(N):
             for j in range(dim):
@@ -154,8 +156,8 @@ def mlsimplexLattice(H1,H2,dim,sf):
 if __name__=='__main__':
     #assert len(sys.argv) > 4, "Argumentos insuficientes: H1 H2 dim resultfile"
     
-    #result = uniformDesign(int(sys.argv[1]),int(sys.argv[2]))
-    result = mlsimplexLattice(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),float(sys.argv[4]))
+    result = uniformDesign(int(sys.argv[1]),int(sys.argv[2]))
+    #result = mlsimplexLattice(int(sys.argv[1]),int(sys.argv[2]),int(sys.argv[3]),float(sys.argv[4]))
     #np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f', header=str(len(result))+' '+sys.argv[3])
-    np.savetxt(sys.argv[5],np.c_[result],fmt='%.10f')
+    np.savetxt(sys.argv[3],np.c_[result],fmt='%.10f')
     
